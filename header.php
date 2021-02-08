@@ -1,3 +1,7 @@
+<?php
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -15,8 +19,15 @@
         <a class= "navbar-brand" href="index.php"><img src="img/logo.png" alt="PawHub Logo"></a>
         <ul class="nav navbar-nav d-flex flex-row">
           <li class="nav nav-item"><a href="index.php">Home</a></li>
-          <li class="nav nav-item"><a href="signup.php">Sign Up</a></li>
-          <li class="nav nav-item"><a href="login.php">Log In</a></li>
+          <?php 
+            if(isset($_SESSION["userID"])) {
+              echo "<li class='nav nav-item'><a href='profile.php'>My Profile</a></li>";
+              echo"<li class='nav nav-item'><a href='includes/logout.inc.php'>Log Out</a></li>";
+            } else {
+              echo "<li class='nav nav-item'><a href='signup.php'>Sign Up</a></li>";
+              echo "<li class='nav nav-item'><a href='login.php'>Log In</a></li>";
+            }          
+          ?>
         </ul>
       </div>
     </nav>
