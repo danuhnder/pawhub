@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 1);
+
 if (isset($_POST["submit"])) {
   
   $name = $_POST["name"];
@@ -41,7 +43,7 @@ if (isset($_POST["submit"])) {
   exit();
   }
 
-  createUser($conn, $name, $email, $username, $pwd);
+  createUser($conn, $name, $email, $pwd ,$uid);
 
 } else {
     header("location: ../signup.php");

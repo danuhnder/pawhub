@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 1);
+
 function emptyInputSignup($name, $email, $uid, $pwd, $pwdConfirm) {
   $result;
   if (empty($name) || empty($email) || empty($uid) || empty($pwd) || empty($pwdConfirm)) {
@@ -54,9 +56,9 @@ function uidExists($conn, $uid) {
 
   mysqli_stmt_bind_param($stmt, "s", $uid);
   mysqli_stmt_execute($stmt);
-  echo $stmt;
+  
   $resultData = mysqli_stmt_get_result($stmt);
-  echo $resultData;
+  
 
   if ($row = mysqli_fetch_assoc($resultData)) {
     return $row;
@@ -67,5 +69,50 @@ function uidExists($conn, $uid) {
   }
 
   mysqli_stmt_close($stmt);
+
+}
+
+function emailExists($conn, $email) {
+  $sql = "SELECT * FROM users WHERE usersEmail = ?;";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../signup.php?error=stmtFailed");
+  exit();
+  } 
+
+  mysqli_stmt_bind_param($stmt, "s", $email);
+  mysqli_stmt_execute($stmt);
+  
+  $resultData = mysqli_stmt_get_result($stmt);
+  
+
+  if ($row = mysqli_fetch_assoc($resultData)) {
+    return $row;
+  }
+  else {
+    $result = false;
+    return $result;
+  }
+
+  mysqli_stmt_close($stmt);
+
+}
+
+function createUser($conn, $name, $email, $pwd, $uid) {
+  $sql = "INSERT INTO users (usersName, usersEmail, usersPwd, usersUid) VALUES (?, ?, ?, ?);";
+  echo $sql;
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../signup.php?error=stmtFailed");
+  exit();
+  } 
+
+  $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
+  echo $hashedPwd;
+  mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $hashedPwd, $uid);
+  mysqli_stmt_execute($stmt);
+  mysqli_stmt_close($stmt);
+  header("location: ../signup.php?error=none");
+  exit();
 
 }
